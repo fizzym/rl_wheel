@@ -1,0 +1,10 @@
+<launch>
+    <arg name="init_pose"/>
+    <arg name="model" default="$(find rl_wheel)/urdf/ball.urdf.xacro"/>
+
+    <param name="ball_description" command="$(find xacro)/xacro $(arg model)" />
+
+    <node name="urdf_spawner_ball" pkg="gazebo_ros" type="spawn_model"
+        args="$(arg init_pose) -urdf -model ball_model -param ball_description" 
+        respawn="false" output="screen"/>
+</launch>

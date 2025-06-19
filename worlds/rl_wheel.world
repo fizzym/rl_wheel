@@ -1,0 +1,18 @@
+<?xml version="1.0"/>
+<sdf version="1.4">
+    <world name="rl_wheel_world">
+        <gui>
+            <camera name="user_camera">
+                <pose> -2.0 0.0 1.4 0.0 0.46 0.0 </pose>
+            </camera>
+        </gui>
+
+        <include>
+            <uri>model://sun</uri>
+        </include>
+                
+        <include>
+            <uri>model://ground</uri>
+        </include>
+    </world>
+</sdf>

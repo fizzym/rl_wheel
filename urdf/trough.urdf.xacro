@@ -1,0 +1,143 @@
+<?xml version="1.0"?>
+
+<robot name="trough" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <xacro:property name="base_mass" value="50"/>
+    <xacro:property name="base_length" value="0.5"/>
+    <xacro:property name="base_width" value="0.5"/>
+    <xacro:property name="base_height" value="0.01"/>
+
+    <xacro:property name="arm_mass" value="0.500"/>
+    <xacro:property name="arm_length" value="0.01"/>
+    <xacro:property name="arm_width" value="0.05"/>
+    <xacro:property name="arm_height" value="0.5"/>
+
+    <xacro:property name="trough_long_mass" value="0.100"/>
+    <xacro:property name="trough_long_length" value="0.3"/>
+    <xacro:property name="trough_long_width" value="0.1"/>
+    <xacro:property name="trough_long_height" value="0.01"/>
+    
+    <xacro:include filename="$(find rl_wheel)/urdf/macros.xacro"/>
+    <xacro:include filename="$(find rl_wheel)/urdf/materials.xacro"/>
+
+    <link name="base_link">
+        <xacro:box_inertial name="base" 
+            m="${base_mass}" x="${base_length}" y="${base_width}" z="${base_height}"/>
+        <collision name='base_collision'>
+            <geometry>
+                <box size="${base_length} ${base_width} ${base_height}"/>
+            </geometry>
+        </collision>
+        <visual name='base_visual'>
+            <origin xyz="0 0 0" rpy=" 0 0 0"/>
+            <geometry>
+                <box size="${base_length} ${base_width} ${base_height}"/>
+            </geometry>
+        </visual>
+    </link>
+
+    <link name="arm_link">
+        <xacro:box_inertial name="arm" 
+            m="${arm_mass}" x="${arm_length}" y="${arm_width}" z="${arm_height}"/>
+        <collision name='arm_collision'>
+            <geometry>
+                <box size="${arm_length} ${arm_width} ${arm_height}"/>
+            </geometry>
+        </collision>
+        <visual name='arm_visual'>
+            <origin xyz="0 0 0" rpy=" 0 0 0"/>
+            <geometry>
+                <box size="${arm_length} ${arm_width} ${arm_height}"/>
+            </geometry>
+        </visual>
+    </link>
+
+    <link name="trough_back">
+        <xacro:box_inertial name="trough_back" 
+            m="${trough_long_mass}" 
+            x="${trough_long_length}" y="${trough_long_width}" z="${trough_long_height}"/>
+        <collision name='trough_back_collision'>
+            <geometry>
+                <box size="${trough_long_length} ${trough_long_width} ${trough_long_height}"/>
+            </geometry>
+        </collision>
+        <visual name='trough_long_visual'>
+            <origin xyz="0 0 0" rpy=" 0 0 0"/>
+            <geometry>
+                <box size="${trough_long_length} ${trough_long_width} ${trough_long_height}"/>
+            </geometry>
+        </visual>
+    </link>
+
+    <link name="trough_floor">
+        <xacro:box_inertial name="trough_back" 
+            m="${trough_long_mass}" 
+            x="${trough_long_length}" y="${trough_long_width}" z="${trough_long_height}"/>
+        <collision name='trough_back_collision'>
+            <geometry>
+                <box size="${trough_long_length} ${trough_long_width} ${trough_long_height}"/>
+            </geometry>
+        </collision>
+        <visual name='trough_long_visual'>
+            <origin xyz="0 0 0" rpy=" 0 0 0"/>
+            <geometry>
+                <box size="${trough_long_length} ${trough_long_width} ${trough_long_height}"/>
+            </geometry>
+        </visual>
+    </link>
+
+    <link name="trough_front">
+        <xacro:box_inertial name="trough_front" 
+            m="${trough_long_mass}" 
+            x="${trough_long_length}" y="${trough_long_width}" z="${trough_long_height}"/>
+        <collision name='trough_front_collision'>
+            <geometry>
+                <box size="${trough_long_length} ${trough_long_width} ${trough_long_height}"/>
+            </geometry>
+        </collision>
+        <visual name='trough_front_visual'>
+            <origin xyz="0 0 0" rpy=" 0 0 0"/>
+            <geometry>
+                <box size="${trough_long_length} ${trough_long_width} ${trough_long_height}"/>
+            </geometry>
+        </visual>
+    </link>
+
+    <!-- *** JOINTS *** -->
+
+    <joint name="base_arm_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="arm_link"/>
+        <origin xyz="0.2 0 ${arm_height/2}"
+            rpy="0 0 0"/>
+    </joint>
+
+    <joint name="arm_trough_back_joint" type="continuous">
+        <parent link="arm_link"/>
+        <child link="trough_back"/>
+        <origin xyz="-${arm_width/2} 0 ${arm_height/2}"
+            rpy="-1.57 0 1.57"/>
+        <axis xyz="0 0 -1"/>
+    </joint>
+
+    <joint name="trough_back_floor_joint" type="fixed">
+        <parent link="trough_back"/>
+        <child link="trough_floor"/>
+        <origin xyz="0 ${trough_long_width/2} ${trough_long_width/2}"
+            rpy="1.57 0 0"/>
+    </joint>
+
+    <joint name="trough_back_front_joint" type="fixed">
+        <parent link="trough_back"/>
+        <child link="trough_front"/>
+        <origin xyz="0 0 ${trough_long_width}"/>
+    </joint>
+
+    <gazebo reference="base_link">
+        <material>grey</material>
+    </gazebo>
+
+    <gazebo reference="arm_link">
+        <material>Gazebo/Orange</material>
+    </gazebo>
+
+</robot>
