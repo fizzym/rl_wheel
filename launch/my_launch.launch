@@ -21,8 +21,12 @@
 
     <group ns="/trough_bot">
         <include file="$(find rl_wheel)/launch/trough.launch">
+            <!-- Need to spawn the base a little above the plane (Z=0.01) to prevent 
+             the physics engine from not being able to solve collisions -->
             <arg name="init_pose" value="-x 0.0 -y 0.0 -z 0.01 -R 0.0 -P 0.0 -Y 0.0" />
         </include>
     </group>
+
+    <include file="$(find rl_wheel)/launch/rl_wheel_control.launch"/>
 
 </launch>
