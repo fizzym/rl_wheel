@@ -29,7 +29,10 @@
     <xacro:include filename="$(find rl_wheel)/urdf/macros.xacro"/>
     <xacro:include filename="$(find rl_wheel)/urdf/materials.xacro"/>
 
-    <link name="base_link">
+    <!-- Use the world link to fix the platform_base_link to the Gazebo base_link-->
+    <link name="world"/>
+
+    <link name="platform_base_link">
         <xacro:box_inertial name="base" 
             m="${base_mass}" x="${base_length}" y="${base_width}" z="${base_height}"/>
         <collision name='base_collision'>
@@ -165,8 +168,13 @@
 
     <!-- *** JOINTS *** -->
 
+    <joint name="fixed" type="fixed">
+        <parent link="world"/>
+        <child link="platform_base_link"/>
+    </joint>
+
     <joint name="base_arm_joint" type="fixed">
-        <parent link="base_link"/>
+        <parent link="platform_base_link"/>
         <child link="arm_link"/>
         <origin xyz="0.2 0 ${arm_height/2}"
             rpy="0 0 0"/>
@@ -208,23 +216,19 @@
     </joint>
 
     <joint name="camera_base_joint" type="fixed">
-        <parent link="base_link"/>
+        <parent link="platform_base_link"/>
         <child link="camera_link"/>
         <origin xyz="0.1 0 1" rpy="0 1.57 0"/>
     </joint>
 
     <!-- *** MATERIAL *** -->
 
-    <gazebo reference="base_link">
-        <material>Gazebo/Green</material>
+    <gazebo reference="platform_base_link">
+        <material>Gazebo/Blue</material>
     </gazebo>
 
     <gazebo reference="arm_link">
         <material>Gazebo/Red</material>
-    </gazebo>
-
-    <gazebo reference="ball_link">
-        <material>Gazebo/Blue</material>
     </gazebo>
 
     <!-- CAMERA PLUGIN -->
@@ -234,27 +238,27 @@
         <camera name="head">
             <horizontal_fov>1.3962634</horizontal_fov>
             <image>
-            <width>800</width>
-            <height>800</height>
-            <format>R8G8B8</format>
+                <width>800</width>
+                <height>800</height>
+                <format>R8G8B8</format>
             </image>
             <clip>
-            <near>0.02</near>
-            <far>300</far>
+                <near>0.02</near>
+                <far>300</far>
             </clip>
             <noise>
-            <type>gaussian</type>
-            <!-- Noise is sampled independently per pixel on each frame.
-                That pixel's noise value is added to each of its color
-                channels, which at that point lie in the range [0,1]. -->
-            <mean>0.0</mean>
-            <stddev>0.007</stddev>
+                <type>gaussian</type>
+                <!-- Noise is sampled independently per pixel on each frame.
+                    That pixel's noise value is added to each of its color
+                    channels, which at that point lie in the range [0,1]. -->
+                <mean>0.0</mean>
+                <stddev>0.007</stddev>
             </noise>
         </camera>
         <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
             <alwaysOn>true</alwaysOn>
             <updateRate>0.0</updateRate>
-            <cameraName>rrbot/camera1</cameraName>
+            <cameraName>camera1</cameraName>
             <imageTopicName>image_raw</imageTopicName>
             <cameraInfoTopicName>camera_info</cameraInfoTopicName>
             <frameName>camera_link</frameName>
@@ -266,6 +270,29 @@
             <distortionT2>0.0</distortionT2>
         </plugin>
         </sensor>
-  </gazebo>
+    </gazebo>
+
+    <!-- TRANSMISSIONS -->
+    <transmission name="trough_tran">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="arm_trough_back_joint">
+            <hardwareInterface>
+                hardware_interface/EffortJointInterface
+            </hardwareInterface>
+        </joint>
+        <actuator name="motor1">
+            <hardwareInterface>
+                hardware_interface/EffortJointInterface
+            </hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <gazebo>
+        <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+            <robotNamespace>/trough_bot</robotNamespace>
+            <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+        </plugin>
+    </gazebo>
 
 </robot>

@@ -1,0 +1,19 @@
+<launch>
+    <!-- Load the robot_description -->
+    <arg name="model" default="$(find rl_wheel)/urdf/trough.urdf.xacro"/>
+    <param name="robot_description" command="$(find xacro)/xacro $(arg model)" />
+
+    <!-- Load joint controller configuration to parameter server-->
+    <rosparam file="$(find rl_wheel)/config/control.yaml" command="load"/>
+
+    <!-- Load the controllers using the controller manager-->
+    <node name="controler_spawner" pkg="controller_manager" type="spawner"
+        respawn="false" output="screen" ns="/trough_bot"
+        args="arm_trough_back_joint_position_controller joint_state_controller"/>
+
+    <!-- Convert joint states to TF transforms for rviz debugging -->
+    <node name="robot_state_publisher" pkg="robot_state_publisher" 
+        type="robot_state_publisher" respawn="false" output="screen">
+        <remap from="/joint_states" to="trough_bot/joint_states"/>
+    </node>
+</launch>
