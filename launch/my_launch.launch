@@ -25,4 +25,6 @@
         </include>
     </group>
 
+    <include file="$(find rl_wheel)/launch/rl_wheel_control.launch"/>
+
 </launch>
