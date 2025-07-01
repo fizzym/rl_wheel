@@ -3,9 +3,25 @@
     <world name="rl_wheel_world">
         <gui>
             <camera name="user_camera">
-                <pose> -2.0 0.0 1.4 0.0 0.46 0.0 </pose>
+                <pose> -0.3 0.0 1.44 0.0 1.2 0.0 </pose>
             </camera>
         </gui>
+        <!-- 
+        Change simulation speed
+        real_time_factor
+            attempted RTF simulation tries to run at (not guarateed) 
+        real_time_update_rate (default 1000)
+            increase if computer can run faster
+        max_step_size (default 0.001)
+            increasing it increases RTF but simulation accuracy is
+            degraded
+        -->
+        <!-- Increase simulation speed. Keep max_step_size=0.001 to maintain same quality -->
+        <physics type='ode'>
+            <max_step_size>0.001</max_step_size>
+            <real_time_update_rate>200.0</real_time_update_rate>
+            <!-- <real_time_factor>0.2</real_time_factor> -->
+        </physics> 
 
         <include>
             <uri>model://sun</uri>
