@@ -3,6 +3,7 @@
         <env name="DISABLE_ROS1_EOL_WARNINGS" value="true"/>
         <env name="GAZEBO_RESOURCE_PATH" value="$(find rl_wheel)"/>
         <env name="GAZEBO_MODEL_PATH" value="$(find rl_wheel)/models"/>
+        <env name="OPENBLAS_NUM_THREADS" value="1"/>
         <arg name="world_name" value="$(find rl_wheel)/worlds/rl_wheel.world"/>
 
         <arg name="gui" value="true"/>
